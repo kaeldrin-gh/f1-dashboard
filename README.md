@@ -4,6 +4,8 @@ A real-time Formula 1 telemetry and timing dashboard built with Next.js, providi
 
 ![image](https://github.com/user-attachments/assets/3cfdb48b-1aca-439e-93fb-8388378ab187)
 
+(Image shows 2024 mock data due to no live session at that moment.)
+
 ## ✨ Features
 
 ### 🔴 Real-Time Data
