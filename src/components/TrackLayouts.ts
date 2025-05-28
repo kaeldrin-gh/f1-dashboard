@@ -277,13 +277,43 @@ export const trackLayouts: Record<string, TrackLayout> = {
       { x: 290, y: 150 },  // Turn 5-6
       { x: 260, y: 170 },  // Turn 7 (Rindt)
       { x: 220, y: 175 },  // Turn 8
-      { x: 180, y: 170 },  // Turn 9 (Jochen Rindt)
-      { x: 140, y: 155 },  // Turn 10
+      { x: 180, y: 170 },  // Turn 9 (Jochen Rindt)      { x: 140, y: 155 },  // Turn 10
       { x: 110, y: 130 },  // Back straight
       { x: 100, y: 100 },
       { x: 110, y: 75 },
       { x: 140, y: 60 },
       { x: 175, y: 50 }    // Back to start
+    ]
+  },
+
+  // Circuit de Barcelona-Catalunya (Spanish GP)
+  barcelona: {
+    name: "Circuit de Barcelona-Catalunya",
+    width: 420,
+    height: 300,
+    startFinish: { x: 210, y: 50 },
+    sectors: [27, 60, 100],
+    points: [
+      { x: 210, y: 50 },   // Start/Finish
+      { x: 260, y: 55 },   // Turn 1 (Elf)
+      { x: 310, y: 70 },   // Turn 2 (Renault)
+      { x: 350, y: 95 },   // Turn 3 (Repsol)
+      { x: 370, y: 125 },  // Turn 4 (Seat)
+      { x: 380, y: 160 },  // Turn 5 (Chicane)
+      { x: 360, y: 190 },  // Turn 6
+      { x: 320, y: 210 },  // Turn 7 (Campsa)
+      { x: 270, y: 220 },  // Turn 8
+      { x: 220, y: 225 },  // Turn 9 (Banc Sabadell)
+      { x: 170, y: 220 },  // Turn 10 (New Chicane)
+      { x: 120, y: 205 },  // Turn 11
+      { x: 80, y: 180 },   // Turn 12 (Europcar)
+      { x: 50, y: 150 },   // Turn 13 (Spanish)
+      { x: 40, y: 115 },   // Turn 14
+      { x: 50, y: 80 },    // Turn 15 (Wurth)
+      { x: 80, y: 60 },    // Turn 16 (Final chicane)
+      { x: 120, y: 50 },   // Back to main straight
+      { x: 160, y: 48 },
+      { x: 210, y: 50 }    // Back to start
     ]
   }
 };
@@ -293,8 +323,7 @@ export const getTrackLayout = (sessionName?: string): TrackLayout => {
   if (!sessionName) return trackLayouts.default;
   
   const name = sessionName.toLowerCase();
-  
-  if (name.includes('monaco')) return trackLayouts.monaco;
+    if (name.includes('monaco')) return trackLayouts.monaco;
   if (name.includes('silverstone') || name.includes('british')) return trackLayouts.silverstone;
   if (name.includes('spa') || name.includes('belgian')) return trackLayouts.spa;
   if (name.includes('suzuka') || name.includes('japanese')) return trackLayouts.suzuka;
@@ -303,6 +332,7 @@ export const getTrackLayout = (sessionName?: string): TrackLayout => {
   if (name.includes('hungaroring') || name.includes('hungarian') || name.includes('hungary')) return trackLayouts.hungaroring;
   if (name.includes('cota') || name.includes('austin') || name.includes('united states')) return trackLayouts.cota;
   if (name.includes('red bull ring') || name.includes('austria') || name.includes('spielberg')) return trackLayouts.redbullring;
+  if (name.includes('barcelona') || name.includes('catalunya') || name.includes('spanish') || name.includes('spain')) return trackLayouts.barcelona;
   
   return trackLayouts.default;
 };

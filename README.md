@@ -32,6 +32,7 @@ A real-time Formula 1 telemetry and timing dashboard built with Next.js, providi
 - Hungaroring (Hungarian GP)
 - Circuit of the Americas (US GP)
 - Red Bull Ring (Austrian GP)
+- Circuit de Barcelona-Catalunya (Spanish GP)
 
 ## 🛠️ Tech Stack
 
