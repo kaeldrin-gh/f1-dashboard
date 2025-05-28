@@ -33,6 +33,16 @@ This is a real-time F1 telemetry and timing dashboard built with Next.js, TypeSc
 - VSC/Safety Car detection and alerts
 - Penalty and steward decision notifications
 
+## API Documentation
+- OpenF1 API Documentation: [OpenF1 API](https://openf1.org)
+- API Base URL: `https://api.openf1.org/v1/`
+
+## OpenF1 API Guidelines
+When working with Formula 1 data, always refer to the [OpenF1 API documentation](https://openf1.org) for endpoint specifications and data structures. The API provides real-time and historical Formula 1 data including lap timings, car telemetry, radio communications, and driver information.
+
+## Data Format
+All API responses are available in JSON format. Use appropriate query parameters for filtering data by session, driver, or time ranges.
+
 ## Component Structure
 - Dashboard layout with multiple synchronized widgets
 - Track map with real-time car positions

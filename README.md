@@ -21,6 +21,7 @@ A real-time Formula 1 telemetry and timing dashboard built with Next.js, providi
 - **Position Changes** - Real-time overtaking and position swap tracking
 - **Penalty System** - Steward decisions and penalty notifications
 - **Pit Strategy** - Optimal pit window calculations and strategy analysis
+- **Upcoming Races** - F1 calendar with upcoming race schedules and dates
 
 ### 🏁 Supported Circuits
 - Monaco (Monte Carlo)
@@ -94,6 +95,7 @@ src/
 │   ├── TelemetryChart.tsx # Data visualization charts
 │   ├── WeatherWidget.tsx  # Weather and track conditions
 │   ├── Alerts.tsx         # Race incidents and notifications
+│   ├── UpcomingRaces.tsx  # F1 calendar and race schedules
 │   └── ...               # Additional components
 ├── services/              # External API integrations
 │   ├── openf1-api.ts     # OpenF1 API service

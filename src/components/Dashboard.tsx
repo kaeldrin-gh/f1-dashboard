@@ -12,11 +12,12 @@ import { ConnectionStatus } from './ConnectionStatus';
 import { DriverSelector } from './DriverSelector';
 import { PitWindowCalculator } from './PitWindowCalculator';
 import { PositionChanges } from './PositionChanges';
+import { UpcomingRaces } from './UpcomingRaces';
 
 export function Dashboard() {
   const [isMounted, setIsMounted] = useState(false);
   const [telemetryDataType, setTelemetryDataType] = useState<'speed' | 'throttle' | 'brake' | 'rpm'>('speed');
-  const [rightPanelTab, setRightPanelTab] = useState<'pit-windows' | 'position-changes' | 'alerts'>('pit-windows');
+  const [rightPanelTab, setRightPanelTab] = useState<'pit-windows' | 'position-changes' | 'alerts' | 'upcoming-races'>('pit-windows');
     const {
     drivers,
     positions,
@@ -208,13 +209,12 @@ export function Dashboard() {
             />
           </div>
         </div>        {/* Right Column - Tabbed Interface */}
-        <div className="xl:col-span-1 space-y-4 sm:space-y-6">
-          {/* Tab Navigation */}
+        <div className="xl:col-span-1 space-y-4 sm:space-y-6">          {/* Tab Navigation */}
           <div className="bg-gray-800 rounded-lg">
             <div className="flex border-b border-gray-700">
               <button
                 onClick={() => setRightPanelTab('pit-windows')}
-                className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                className={`flex-1 px-3 py-3 text-xs sm:text-sm font-medium transition-colors ${
                   rightPanelTab === 'pit-windows' 
                     ? 'text-red-400 border-b-2 border-red-400' 
                     : 'text-gray-400 hover:text-gray-300'
@@ -224,7 +224,7 @@ export function Dashboard() {
               </button>
               <button
                 onClick={() => setRightPanelTab('position-changes')}
-                className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                className={`flex-1 px-3 py-3 text-xs sm:text-sm font-medium transition-colors ${
                   rightPanelTab === 'position-changes' 
                     ? 'text-red-400 border-b-2 border-red-400' 
                     : 'text-gray-400 hover:text-gray-300'
@@ -233,8 +233,18 @@ export function Dashboard() {
                 Positions
               </button>
               <button
+                onClick={() => setRightPanelTab('upcoming-races')}
+                className={`flex-1 px-3 py-3 text-xs sm:text-sm font-medium transition-colors ${
+                  rightPanelTab === 'upcoming-races' 
+                    ? 'text-red-400 border-b-2 border-red-400' 
+                    : 'text-gray-400 hover:text-gray-300'
+                }`}
+              >
+                Upcoming
+              </button>
+              <button
                 onClick={() => setRightPanelTab('alerts')}
-                className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                className={`flex-1 px-3 py-3 text-xs sm:text-sm font-medium transition-colors ${
                   rightPanelTab === 'alerts' 
                     ? 'text-red-400 border-b-2 border-red-400' 
                     : 'text-gray-400 hover:text-gray-300'
@@ -247,8 +257,7 @@ export function Dashboard() {
                 )}
               </button>
             </div>
-            
-            {/* Tab Content */}
+              {/* Tab Content */}
             <div className="p-3 sm:p-4">
               {rightPanelTab === 'pit-windows' && (
                 <PitWindowCalculator
@@ -263,6 +272,12 @@ export function Dashboard() {
                   drivers={drivers}
                   positions={positions}
                 />
+              )}
+                {rightPanelTab === 'upcoming-races' && (
+                <>
+                  <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Upcoming Races</h2>
+                  <UpcomingRaces maxVisibleRaces={5} />
+                </>
               )}
               
               {rightPanelTab === 'alerts' && (

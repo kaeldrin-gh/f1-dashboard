@@ -2,6 +2,7 @@
 import { 
   Driver, 
   Session, 
+  Meeting,
   Position, 
   Interval, 
   CarData, 
@@ -287,6 +288,12 @@ export class OpenF1Service {
   // Get sessions for a specific year
   async getSessionsByYear(year: number): Promise<Session[]> {
     return this.fetchFromAPI<Session>('/sessions', { year });
+  }
+
+  // Get all meetings (Grand Prix weekends)
+  async getMeetings(year?: number): Promise<Meeting[]> {
+    const currentYear = year || new Date().getFullYear();
+    return this.fetchFromAPI<Meeting>('/meetings', { year: currentYear });
   }
 
   // Get latest data for dashboard
