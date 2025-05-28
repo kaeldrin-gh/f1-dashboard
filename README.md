@@ -1,33 +1,180 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏎️ F1 Dashboard
 
-## Getting Started
+A real-time Formula 1 telemetry and timing dashboard built with Next.js, providing live race data, track maps, and comprehensive analytics for F1 enthusiasts and professionals.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### 🔴 Real-Time Data
+- **Live Timing & Telemetry** - Real-time position updates, sector times, and gap analysis
+- **Track Maps** - Interactive circuit maps with live car positions for 9 major F1 circuits
+- **Session Management** - Support for Practice, Qualifying, Sprint, and Race sessions
+- **WebSocket Integration** - Low-latency real-time updates via Socket.io
+
+### 📊 Advanced Analytics
+- **Telemetry Charts** - Speed, throttle, brake, and gear data visualization
+- **Tyre Strategy** - Compound tracking, age monitoring, and pit window calculations
+- **Weather Monitoring** - Track temperature, weather conditions, and grip analysis
+- **Driver Comparisons** - Side-by-side performance analysis
+
+### 🚨 Race Intelligence
+- **Incident Alerts** - VSC/Safety Car detection and race control notifications
+- **Position Changes** - Real-time overtaking and position swap tracking
+- **Penalty System** - Steward decisions and penalty notifications
+- **Pit Strategy** - Optimal pit window calculations and strategy analysis
+
+### 🏁 Supported Circuits
+- Monaco (Monte Carlo)
+- Silverstone (British GP)
+- Spa-Francorchamps (Belgian GP)
+- Suzuka (Japanese GP)
+- Monza (Italian GP)
+- Interlagos (Brazilian GP)
+- Hungaroring (Hungarian GP)
+- Circuit of the Americas (US GP)
+- Red Bull Ring (Austrian GP)
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15 with App Router, React 19, TypeScript
+- **Styling**: Tailwind CSS for responsive design
+- **Data Visualization**: Plotly.js, D3.js, Recharts
+- **Real-time**: WebSocket connections via Socket.io
+- **State Management**: Zustand for efficient state handling
+- **Data Fetching**: SWR for caching and revalidation
+- **F1 Data**: OpenF1 API integration
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/kaeldrin-gh/f1-dashboard.git
+   cd f1-dashboard
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
+
+3. **Run the development server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   ```
+
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000) to see the dashboard
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout component
+│   ├── page.tsx           # Main dashboard page
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── Dashboard.tsx      # Main dashboard layout
+│   ├── TrackMap.tsx       # Interactive track visualization
+│   ├── TimingTower.tsx    # Live timing and gaps
+│   ├── TelemetryChart.tsx # Data visualization charts
+│   ├── WeatherWidget.tsx  # Weather and track conditions
+│   ├── Alerts.tsx         # Race incidents and notifications
+│   └── ...               # Additional components
+├── services/              # External API integrations
+│   ├── openf1-api.ts     # OpenF1 API service
+│   └── websocket-service.ts # Real-time WebSocket handling
+├── store/                 # State management
+│   └── dashboard-store.ts # Zustand store
+└── types/                 # TypeScript definitions
+    └── f1-types.ts       # F1 data type definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔌 Data Sources
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### OpenF1 API
+The dashboard integrates with the [OpenF1 API](https://openf1.org/) for:
+- Live session data and timing
+- Driver positions and telemetry
+- Weather and track conditions
+- Race control messages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Real-Time Updates
+- WebSocket connections for live data streaming
+- Automatic reconnection handling
+- Efficient data caching and state management
 
-## Learn More
+## 🎯 Usage
 
-To learn more about Next.js, take a look at the following resources:
+### Dashboard Navigation
+- **Session Selection**: Choose between Practice, Qualifying, Sprint, or Race
+- **Circuit Selection**: Pick from available F1 circuits
+- **Driver Focus**: Select specific drivers for detailed analysis
+- **Time Range**: Adjust historical data viewing window
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Track Map
+- View real-time car positions on accurate circuit layouts
+- Click on drivers for detailed telemetry
+- Monitor sector performance and lap progression
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Timing Tower
+- Live gap analysis between drivers
+- Sector time comparisons
+- Position change tracking
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+1. Push your code to GitHub
+2. Connect your repository to [Vercel](https://vercel.com)
+3. Deploy with automatic builds and updates
+
+### Manual Deployment
+```bash
+npm run build
+npm start
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+### Development Guidelines
+- Follow TypeScript best practices
+- Use the existing component structure
+- Ensure responsive design compatibility
+- Test with real F1 session data when available
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙏 Acknowledgments
+
+- [OpenF1](https://openf1.org/) for providing free F1 data API
+- [FastF1](https://github.com/theOehrly/FastF1) for F1 data analysis inspiration
+- Formula 1 community for continuous feedback and support
+
+## 📞 Support
+
+If you have any questions or run into issues, please [open an issue](https://github.com/kaeldrin-gh/f1-dashboard/issues) on GitHub.
+
+---
+
+**Built with ❤️ for the Formula 1 community**
 
 ## Deploy on Vercel
 
