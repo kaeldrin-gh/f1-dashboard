@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { DashboardState, WSMessage, ConnectionStatus, SessionInfo, RaceControlMessage, DriverPosition } from '@/types/f1-types';
+import { DashboardState, WSMessage, ConnectionStatus, SessionInfo, RaceControlMessage, DriverPosition, TyreData } from '@/types/f1-types';
 import { openF1Api } from '@/services/openf1-api';
 
 interface DashboardStore extends DashboardState {
@@ -10,6 +10,7 @@ interface DashboardStore extends DashboardState {
   selectedDrivers: number[];
   locationData: Record<number, any>;
   positions: DriverPosition[];
+  tyreData: TyreData[];
   
   // Actions
   setCurrentSession: (session: any) => void;
@@ -21,12 +22,12 @@ interface DashboardStore extends DashboardState {
   updateLocations: (locations: Record<number, any>) => void;
   updateWeather: (weather: any) => void;
   updateSessionInfo: (info: SessionInfo) => void;
-  addAlert: (message: RaceControlMessage) => void;
-  addRaceControlMessage: (message: any) => void;
+  addAlert: (message: RaceControlMessage) => void;  addRaceControlMessage: (message: any) => void;
   removeRaceControlMessage: (index: number) => void;
   dismissAlert: (index: number) => void;
   setSelectedDrivers: (drivers: number[]) => void;
   setConnectionStatus: (status: ConnectionStatus) => void;
+  updateTyreData: (tyreData: TyreData[]) => void;
   fetchInitialData: () => Promise<void>;
   startLiveUpdates: () => () => void;
 }
@@ -46,10 +47,10 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   // Additional state
   connectionStatus: 'disconnected',
   sessionInfo: null,
-  alerts: [],
-  selectedDrivers: [], // Start with empty selection, will be populated when drivers are loaded
+  alerts: [],  selectedDrivers: [], // Start with empty selection, will be populated when drivers are loaded
   locationData: {},
   positions: [],
+  tyreData: [],
 
   // Actions
   setCurrentSession: (session) => set({ currentSession: session }),
@@ -118,6 +119,11 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
     lastUpdate: new Date().toISOString() 
   }),
   
+  updateTyreData: (tyreData) => set({ 
+    tyreData, 
+    lastUpdate: new Date().toISOString() 
+  }),
+  
   updateSessionInfo: (info) => set({ 
     sessionInfo: info,
     lastUpdate: new Date().toISOString() 
@@ -162,13 +168,13 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
         
         // Fetch all initial data
         const data = await openF1Api.getDashboardData(session.session_key);
-        
-        set({
+          set({
           drivers: data.drivers,
           livePositions: data.positions,
           liveIntervals: data.intervals,
           weather: data.weather,
           raceControl: data.raceControl,
+          tyreData: data.tyreData || [],
           locations: data.locations.reduce((acc, loc) => {
             acc[loc.driver_number] = loc;
             return acc;

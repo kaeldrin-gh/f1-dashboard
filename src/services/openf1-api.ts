@@ -285,6 +285,16 @@ export class OpenF1Service {
     });
   }
 
+  // Get tyre data
+  async getTyreData(sessionKey?: number): Promise<TyreData[]> {
+    const key = sessionKey || this.sessionKey;
+    if (!key) return [];
+
+    return this.fetchFromAPI<TyreData>('/stints', {
+      session_key: key
+    });
+  }
+
   // Get sessions for a specific year
   async getSessionsByYear(year: number): Promise<Session[]> {
     return this.fetchFromAPI<Session>('/sessions', { year });
@@ -295,7 +305,6 @@ export class OpenF1Service {
     const currentYear = year || new Date().getFullYear();
     return this.fetchFromAPI<Meeting>('/meetings', { year: currentYear });
   }
-
   // Get latest data for dashboard
   async getDashboardData(sessionKey?: number) {
     const key = sessionKey || this.sessionKey;
@@ -311,7 +320,8 @@ export class OpenF1Service {
         weather,
         raceControl,
         locations,
-        carData
+        carData,
+        tyreData
       ] = await Promise.all([
         this.getDrivers(key),
         this.getPositions(key),
@@ -319,7 +329,8 @@ export class OpenF1Service {
         this.getWeatherData(key),
         this.getRaceControl(key),
         this.getLocationData(key),
-        this.getCarData(key)
+        this.getCarData(key),
+        this.getTyreData(key)
       ]);
 
       return {
@@ -329,7 +340,8 @@ export class OpenF1Service {
         weather: weather[weather.length - 1] || null, // Get latest weather
         raceControl,
         locations,
-        carData
+        carData,
+        tyreData
       };
     } catch (error) {
       console.error('Error fetching dashboard data:', error);

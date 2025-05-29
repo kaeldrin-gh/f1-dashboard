@@ -36,7 +36,6 @@ export function DriverSelector({
       }
     }
   };
-
   const getTeamColor = (teamName: string): string => {
     const teamColors: Record<string, string> = {
       'Red Bull Racing': '#1E3A8A',
@@ -44,10 +43,10 @@ export function DriverSelector({
       'Ferrari': '#DC2626',
       'McLaren': '#EA580C',
       'Alpine': '#2563EB',
-      'AlphaTauri': '#6366F1',
+      'Racing Bulls': '#6366F1',  // Updated from AlphaTauri
       'Aston Martin': '#065F46',
       'Williams': '#1D4ED8',
-      'Alfa Romeo': '#991B1B',
+      'Kick Sauber': '#991B1B',   // Updated from Alfa Romeo
       'Haas': '#78716C'
     };
     return teamColors[teamName] || '#6B7280';

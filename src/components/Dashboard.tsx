@@ -13,11 +13,12 @@ import { DriverSelector } from './DriverSelector';
 import { PitWindowCalculator } from './PitWindowCalculator';
 import { PositionChanges } from './PositionChanges';
 import { UpcomingRaces } from './UpcomingRaces';
+import { RaceStrategyOverview } from './RaceStrategyOverview';
 
 export function Dashboard() {
   const [isMounted, setIsMounted] = useState(false);
   const [telemetryDataType, setTelemetryDataType] = useState<'speed' | 'throttle' | 'brake' | 'rpm'>('speed');
-  const [rightPanelTab, setRightPanelTab] = useState<'pit-windows' | 'position-changes' | 'alerts' | 'upcoming-races'>('pit-windows');
+  const [rightPanelTab, setRightPanelTab] = useState<'pit-windows' | 'position-changes' | 'strategy' | 'alerts'>('pit-windows');
     const {
     drivers,
     positions,
@@ -58,20 +59,28 @@ export function Dashboard() {
     // Fallback: If no drivers are loaded after 5 seconds, use mock data
     const fallbackTimer = setTimeout(() => {
       const currentDrivers = useDashboardStore.getState().drivers;
-      if (currentDrivers.length === 0) {
-        console.log('🔧 No drivers loaded, using fallback mock data...');
-        const mockDrivers = [
+      if (currentDrivers.length === 0) {        console.log('🔧 No drivers loaded, using fallback mock data...');        const mockDrivers = [
           { driver_number: 1, name_acronym: 'VER', full_name: 'Max Verstappen', team_name: 'Red Bull Racing' },
-          { driver_number: 11, name_acronym: 'PER', full_name: 'Sergio Perez', team_name: 'Red Bull Racing' },
-          { driver_number: 44, name_acronym: 'HAM', full_name: 'Lewis Hamilton', team_name: 'Mercedes' },
+          { driver_number: 22, name_acronym: 'TSU', full_name: 'Yuki Tsunoda', team_name: 'Red Bull Racing' },
           { driver_number: 63, name_acronym: 'RUS', full_name: 'George Russell', team_name: 'Mercedes' },
+          { driver_number: 12, name_acronym: 'ANT', full_name: 'Kimi Antonelli', team_name: 'Mercedes' },
           { driver_number: 16, name_acronym: 'LEC', full_name: 'Charles Leclerc', team_name: 'Ferrari' },
-          { driver_number: 55, name_acronym: 'SAI', full_name: 'Carlos Sainz', team_name: 'Ferrari' },
+          { driver_number: 44, name_acronym: 'HAM', full_name: 'Lewis Hamilton', team_name: 'Ferrari' },
           { driver_number: 4, name_acronym: 'NOR', full_name: 'Lando Norris', team_name: 'McLaren' },
           { driver_number: 81, name_acronym: 'PIA', full_name: 'Oscar Piastri', team_name: 'McLaren' },
           { driver_number: 14, name_acronym: 'ALO', full_name: 'Fernando Alonso', team_name: 'Aston Martin' },
-          { driver_number: 18, name_acronym: 'STR', full_name: 'Lance Stroll', team_name: 'Aston Martin' }
-        ];        useDashboardStore.getState().updateDrivers(mockDrivers);
+          { driver_number: 18, name_acronym: 'STR', full_name: 'Lance Stroll', team_name: 'Aston Martin' },
+          { driver_number: 11, name_acronym: 'HAD', full_name: 'Isack Hadjar', team_name: 'Racing Bulls' },
+          { driver_number: 21, name_acronym: 'LAW', full_name: 'Liam Lawson', team_name: 'Racing Bulls' },
+          { driver_number: 55, name_acronym: 'SAI', full_name: 'Carlos Sainz', team_name: 'Williams' },
+          { driver_number: 2, name_acronym: 'SAR', full_name: 'Logan Sargeant', team_name: 'Williams' },
+          { driver_number: 31, name_acronym: 'OCO', full_name: 'Esteban Ocon', team_name: 'Alpine' },
+          { driver_number: 10, name_acronym: 'GAS', full_name: 'Pierre Gasly', team_name: 'Alpine' },
+          { driver_number: 20, name_acronym: 'MAG', full_name: 'Kevin Magnussen', team_name: 'Haas' },
+          { driver_number: 87, name_acronym: 'BEA', full_name: 'Oliver Bearman', team_name: 'Haas' },
+          { driver_number: 77, name_acronym: 'BOT', full_name: 'Valtteri Bottas', team_name: 'Kick Sauber' },
+          { driver_number: 5, name_acronym: 'BOR', full_name: 'Gabriel Bortoleto', team_name: 'Kick Sauber' }
+        ];useDashboardStore.getState().updateDrivers(mockDrivers);
         
         // Start animated mock position updates
         let animationFrame = 0;
@@ -168,10 +177,14 @@ export function Dashboard() {
               drivers={drivers}
             />
           </div>
-          
-          <div className="bg-gray-800 rounded-lg p-3 sm:p-4">
+            <div className="bg-gray-800 rounded-lg p-3 sm:p-4">
             <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Weather Conditions</h2>
             <WeatherWidget weather={weather} />
+          </div>
+          
+          <div className="bg-gray-800 rounded-lg p-3 sm:p-4">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Upcoming Races</h2>
+            <UpcomingRaces maxVisibleRaces={4} />
           </div>
         </div>
 
@@ -231,16 +244,15 @@ export function Dashboard() {
                 }`}
               >
                 Positions
-              </button>
-              <button
-                onClick={() => setRightPanelTab('upcoming-races')}
+              </button>              <button
+                onClick={() => setRightPanelTab('strategy')}
                 className={`flex-1 px-3 py-3 text-xs sm:text-sm font-medium transition-colors ${
-                  rightPanelTab === 'upcoming-races' 
+                  rightPanelTab === 'strategy' 
                     ? 'text-red-400 border-b-2 border-red-400' 
                     : 'text-gray-400 hover:text-gray-300'
                 }`}
               >
-                Upcoming
+                Strategy
               </button>
               <button
                 onClick={() => setRightPanelTab('alerts')}
@@ -272,12 +284,14 @@ export function Dashboard() {
                   drivers={drivers}
                   positions={positions}
                 />
-              )}
-                {rightPanelTab === 'upcoming-races' && (
-                <>
-                  <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Upcoming Races</h2>
-                  <UpcomingRaces maxVisibleRaces={5} />
-                </>
+              )}              {rightPanelTab === 'strategy' && (
+                <RaceStrategyOverview
+                  drivers={drivers}
+                  positions={positions}
+                  weather={weather || undefined}
+                  sessionInfo={sessionInfo}
+                  selectedDrivers={selectedDrivers}
+                />
               )}
               
               {rightPanelTab === 'alerts' && (

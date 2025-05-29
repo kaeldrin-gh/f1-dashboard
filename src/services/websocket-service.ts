@@ -169,19 +169,27 @@ class WebSocketService {
         } else {
           // No live session found, load mock data for testing
           console.log('📺 No live session found, loading mock data for testing...');
-          
-          // Create mock drivers for testing (2024 F1 grid)
-          const mockDrivers = [
-            { driver_number: 1, name_acronym: 'VER', full_name: 'Max Verstappen', team_name: 'Red Bull Racing' },
-            { driver_number: 11, name_acronym: 'PER', full_name: 'Sergio Perez', team_name: 'Red Bull Racing' },
-            { driver_number: 44, name_acronym: 'HAM', full_name: 'Lewis Hamilton', team_name: 'Mercedes' },
+            // Create mock drivers for testing (2025 F1 grid)
+          const mockDrivers = [            { driver_number: 1, name_acronym: 'VER', full_name: 'Max Verstappen', team_name: 'Red Bull Racing' },
+            { driver_number: 22, name_acronym: 'TSU', full_name: 'Yuki Tsunoda', team_name: 'Red Bull Racing' },
             { driver_number: 63, name_acronym: 'RUS', full_name: 'George Russell', team_name: 'Mercedes' },
+            { driver_number: 12, name_acronym: 'ANT', full_name: 'Kimi Antonelli', team_name: 'Mercedes' },
             { driver_number: 16, name_acronym: 'LEC', full_name: 'Charles Leclerc', team_name: 'Ferrari' },
-            { driver_number: 55, name_acronym: 'SAI', full_name: 'Carlos Sainz', team_name: 'Ferrari' },
+            { driver_number: 44, name_acronym: 'HAM', full_name: 'Lewis Hamilton', team_name: 'Ferrari' },
             { driver_number: 4, name_acronym: 'NOR', full_name: 'Lando Norris', team_name: 'McLaren' },
             { driver_number: 81, name_acronym: 'PIA', full_name: 'Oscar Piastri', team_name: 'McLaren' },
             { driver_number: 14, name_acronym: 'ALO', full_name: 'Fernando Alonso', team_name: 'Aston Martin' },
-            { driver_number: 18, name_acronym: 'STR', full_name: 'Lance Stroll', team_name: 'Aston Martin' }
+            { driver_number: 18, name_acronym: 'STR', full_name: 'Lance Stroll', team_name: 'Aston Martin' },
+            { driver_number: 11, name_acronym: 'HAD', full_name: 'Isack Hadjar', team_name: 'Racing Bulls' },
+            { driver_number: 21, name_acronym: 'LAW', full_name: 'Liam Lawson', team_name: 'Racing Bulls' },
+            { driver_number: 55, name_acronym: 'SAI', full_name: 'Carlos Sainz', team_name: 'Williams' },
+            { driver_number: 2, name_acronym: 'SAR', full_name: 'Logan Sargeant', team_name: 'Williams' },
+            { driver_number: 31, name_acronym: 'OCO', full_name: 'Esteban Ocon', team_name: 'Alpine' },
+            { driver_number: 10, name_acronym: 'GAS', full_name: 'Pierre Gasly', team_name: 'Alpine' },
+            { driver_number: 20, name_acronym: 'MAG', full_name: 'Kevin Magnussen', team_name: 'Haas' },
+            { driver_number: 87, name_acronym: 'BEA', full_name: 'Oliver Bearman', team_name: 'Haas' },
+            { driver_number: 77, name_acronym: 'BOT', full_name: 'Valtteri Bottas', team_name: 'Kick Sauber' },
+            { driver_number: 5, name_acronym: 'BOR', full_name: 'Gabriel Bortoleto', team_name: 'Kick Sauber' }
           ];
           
           store.updateDrivers(mockDrivers);          store.updateSessionInfo({
