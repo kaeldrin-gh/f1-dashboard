@@ -1,6 +1,11 @@
 # 🏎️ F1 Dashboard
-
+## 🚧 Work in Progress
 A real-time Formula 1 telemetry and timing dashboard built with Next.js, providing live race data, track maps, and comprehensive analytics for F1 enthusiasts and professionals.
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/3cfdb48b-1aca-439e-93fb-8388378ab187" alt="F1 race dashboard displaying live timing and telemetry data">
+  <p><em>(Displaying 2024 mock data - captured during development with no active live session.)</em></p>
+</div>
 
 ## ✨ Features
 
