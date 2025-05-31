@@ -21,6 +21,7 @@ This is a real-time F1 telemetry and timing dashboard built with Next.js, TypeSc
 - Use TypeScript interfaces for all F1 data structures
 - Implement proper error boundaries and loading states
 - Follow responsive design principles for mobile/tablet viewing
+- Use Powershell terminal syntax when providing command examples.
 
 ## F1 Data Integration
 - OpenF1 API for live timing, positions, telemetry
@@ -34,11 +35,9 @@ This is a real-time F1 telemetry and timing dashboard built with Next.js, TypeSc
 - Penalty and steward decision notifications
 
 ## API Documentation
-- OpenF1 API Documentation: [OpenF1 API](https://openf1.org)
+- OpenF1 API Documentation, The API provides real-time and historical Formula 1 data including lap timings, car telemetry, radio communications, and driver information.: [OpenF1 API](https://openf1.org)
 - API Base URL: `https://api.openf1.org/v1/`
-
-## OpenF1 API Guidelines
-When working with Formula 1 data, always refer to the [OpenF1 API documentation](https://openf1.org) for endpoint specifications and data structures. The API provides real-time and historical Formula 1 data including lap timings, car telemetry, radio communications, and driver information.
+- Jolpi API for for historical data and basic race winner information - it's reliable and well-documented (which based from ergast api): [Jolpi API](https://api.jolpi.ca/ergast/f1/)
 
 ## Data Format
 All API responses are available in JSON format. Use appropriate query parameters for filtering data by session, driver, or time ranges.

@@ -183,7 +183,7 @@ export function Dashboard() {
           </div>
           
           <div className="bg-gray-800 rounded-lg p-3 sm:p-4">
-            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Upcoming Races</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Races</h2>
             <UpcomingRaces maxVisibleRaces={4} />
           </div>
         </div>
