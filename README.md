@@ -48,7 +48,7 @@ A real-time Formula 1 telemetry and timing dashboard built with Next.js, providi
 - **Real-time**: WebSocket connections via Socket.io
 - **State Management**: Zustand for efficient state handling
 - **Data Fetching**: SWR for caching and revalidation
-- **F1 Data**: OpenF1 API integration
+- **F1 Data**: OpenF1 API and Jolpi/Ergast APIintegration
 
 ## 🚀 Getting Started
 
