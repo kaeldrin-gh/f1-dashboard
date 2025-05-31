@@ -26,7 +26,7 @@ A real-time Formula 1 telemetry and timing dashboard built with Next.js, providi
 - **Position Changes** - Real-time overtaking and position swap tracking
 - **Penalty System** - Steward decisions and penalty notifications
 - **Pit Strategy** - Optimal pit window calculations and strategy analysis
-- **Upcoming Races** - F1 calendar with upcoming race schedules and dates
+- **Race Calendar** - F1 calendar with upcoming race schedules and finished race results with winners
 
 ### 🏁 Supported Circuits
 - Monaco (Monte Carlo)
