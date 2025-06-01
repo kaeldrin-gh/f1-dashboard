@@ -14,6 +14,22 @@ export function TrackMap({ locations, drivers }: TrackMapProps) {
     setIsClient(true);
   }, []);
 
+  const getTeamColor = (teamName: string): string => {
+    const teamColors: Record<string, string> = {
+      'Red Bull Racing': '#1E3A8A',
+      'Mercedes': '#059669',
+      'Ferrari': '#DC2626',
+      'McLaren': '#EA580C',
+      'Alpine': '#2563EB',
+      'Racing Bulls': '#6366F1',  // Updated from AlphaTauri
+      'Aston Martin': '#065F46',
+      'Williams': '#1D4ED8',
+      'Kick Sauber': '#991B1B',   // Updated from Alfa Romeo
+      'Haas': '#78716C'
+    };
+    return teamColors[teamName] || '#6B7280';
+  };
+
   useEffect(() => {
     if (!isClient) return;
     const canvas = canvasRef.current;
@@ -83,22 +99,22 @@ export function TrackMap({ locations, drivers }: TrackMapProps) {
     ctx.fillStyle = '#EF4444';
     ctx.font = 'bold 10px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('START/FINISH', startFinish.x, startFinish.y - 12);    // Draw car positions (only for selected drivers)
+    ctx.fillText('START/FINISH', startFinish.x, startFinish.y - 12);    // Draw car positions
     Object.entries(locations || {}).forEach(([driverNumber, location]) => {
       const driverNum = parseInt(driverNumber);
       const driver = drivers?.find(d => d.driver_number === driverNum);
       
-      // Only show selected drivers
-      if (!driver || !location || !selectedDrivers.includes(driverNum)) return;
+      // Show all drivers if none selected, otherwise only show selected drivers
+      const shouldShowDriver = selectedDrivers.length === 0 || selectedDrivers.includes(driverNum);
+      if (!driver || !location || !shouldShowDriver) return;
 
       // Convert location data to track position
       // For demo, we'll use a simple mapping - in real implementation,
       // this would use the actual track coordinates from OpenF1
       const trackProgress = ((location.x || 0) + (location.y || 0)) % 100;
-      const position = getTrackPosition(track, trackProgress);
-
-      // Draw car dot with team color
-      ctx.fillStyle = `#${driver.team_colour}`;
+      const position = getTrackPosition(track, trackProgress);      // Draw car dot with team color
+      const teamColor = getTeamColor(driver.team_name || '');
+      ctx.fillStyle = teamColor;
       ctx.strokeStyle = '#FFFFFF';
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -113,7 +129,7 @@ export function TrackMap({ locations, drivers }: TrackMapProps) {
       ctx.fillText(driver.driver_number.toString(), position.x, position.y + 3);
 
       // Draw driver name nearby
-      ctx.fillStyle = `#${driver.team_colour}`;
+      ctx.fillStyle = teamColor;
       ctx.font = '9px sans-serif';
       ctx.fillText(driver.name_acronym, position.x, position.y + 18);
     });
@@ -136,8 +152,10 @@ export function TrackMap({ locations, drivers }: TrackMapProps) {
           />          <div className="mt-2 text-xs text-gray-400 text-center">
             {sessionInfo?.status === 'finished' ? (
               <span className="text-amber-400">⚠️ No live session - Showing demo track layout</span>
+            ) : selectedDrivers.length === 0 ? (
+              'Showing all drivers • Red line: Start/Finish • Yellow dots: Sector markers'
             ) : (
-              'Live car positions • Red line: Start/Finish • Yellow dots: Sector markers'
+              `Showing ${selectedDrivers.length} selected driver${selectedDrivers.length > 1 ? 's' : ''} • Red line: Start/Finish • Yellow dots: Sector markers`
             )}
           </div>
           
@@ -145,23 +163,36 @@ export function TrackMap({ locations, drivers }: TrackMapProps) {
           <div className="mt-2 text-xs text-gray-400 text-center max-w-sm">
             <strong>Sectors explained:</strong> F1 tracks are divided into 3 sectors (S1, S2, S3) for timing purposes. 
             Each sector measures split times to analyze driver performance through different parts of the circuit.
-          </div>
-            {/* Driver Legend - Only show selected drivers */}
-          {selectedDrivers && selectedDrivers.length > 0 && drivers && (
+          </div>          {/* Driver Legend - Show selected drivers or all drivers if none selected */}
+          {drivers && drivers.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-              {selectedDrivers.map(driverNumber => {
-                const driver = drivers.find(d => d.driver_number === driverNumber);
-                if (!driver) return null;
-                return (
+              {selectedDrivers.length === 0 ? (
+                // Show all drivers when none selected
+                drivers.slice(0, 10).map(driver => (
                   <div key={driver.driver_number} className="flex items-center space-x-2">
                     <div 
                       className="w-3 h-3 rounded-full border border-white"
-                      style={{ backgroundColor: `#${driver.team_colour || '6B7280'}` }}
+                      style={{ backgroundColor: getTeamColor(driver.team_name || '') }}
                     />
                     <span>{driver.name_acronym}</span>
                   </div>
-                );
-              })}
+                ))
+              ) : (
+                // Show only selected drivers
+                selectedDrivers.map(driverNumber => {
+                  const driver = drivers.find(d => d.driver_number === driverNumber);
+                  if (!driver) return null;
+                  return (
+                    <div key={driver.driver_number} className="flex items-center space-x-2">
+                      <div 
+                        className="w-3 h-3 rounded-full border border-white"
+                        style={{ backgroundColor: getTeamColor(driver.team_name || '') }}
+                      />
+                      <span>{driver.name_acronym}</span>
+                    </div>
+                  );
+                })
+              )}
             </div>
           )}
         </>

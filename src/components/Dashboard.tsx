@@ -81,15 +81,19 @@ export function Dashboard() {
           { driver_number: 77, name_acronym: 'BOT', full_name: 'Valtteri Bottas', team_name: 'Kick Sauber' },
           { driver_number: 5, name_acronym: 'BOR', full_name: 'Gabriel Bortoleto', team_name: 'Kick Sauber' }
         ];useDashboardStore.getState().updateDrivers(mockDrivers);
-        
-        // Start animated mock position updates
+          // Start animated mock position updates
         let animationFrame = 0;
         const animatePositions = () => {
           animationFrame += 0.5; // Animation speed
           
-          // Generate moving positions for selected drivers around the track (0-100%)
+          // Generate moving positions for drivers around the track (0-100%)
           const selectedDrivers = useDashboardStore.getState().selectedDrivers;
-          const mockLocations = selectedDrivers.map((driverNumber, index) => {
+          const allDrivers = useDashboardStore.getState().drivers;
+          
+          // Use selected drivers if any are selected, otherwise use all drivers
+          const driversToAnimate = selectedDrivers.length > 0 ? selectedDrivers : allDrivers.map(d => d.driver_number);
+          
+          const mockLocations = driversToAnimate.map((driverNumber, index) => {
             // Each driver has a different starting position and speed
             const baseProgress = (animationFrame + index * 20) % 100;
             // Convert progress to x,y coordinates (simplified simulation)
