@@ -54,8 +54,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
 
   // Actions
   setCurrentSession: (session) => set({ currentSession: session }),
-  
-  updateDrivers: (drivers) => {
+    updateDrivers: (drivers) => {
     const state = get();
     // Only auto-select first 3 drivers on initial load (when selectedDrivers is empty and hasn't been set yet)
     // Check if this is the first time drivers are loaded by seeing if we have no drivers yet
@@ -63,14 +62,6 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
     const newSelectedDrivers = isInitialLoad && state.selectedDrivers.length === 0
       ? drivers.slice(0, 3).map(d => d.driver_number) 
       : state.selectedDrivers;
-    
-    console.log('updateDrivers:', {
-      driversCount: drivers.length,
-      previousDriversCount: state.drivers.length,
-      isInitialLoad,
-      previousSelection: state.selectedDrivers,
-      newSelection: newSelectedDrivers
-    });
     
     set({ 
       drivers, 
@@ -159,11 +150,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
     alerts: state.alerts.filter((_, i) => i !== index),
     raceControl: state.raceControl.filter((_, i) => i !== index)
   })),
-
-  setSelectedDrivers: (drivers) => {
-    console.log('setSelectedDrivers called with:', drivers);
-    set({ selectedDrivers: drivers });
-  },
+  setSelectedDrivers: (drivers) => set({ selectedDrivers: drivers }),
   
   setConnectionStatus: (status) => set({ 
     connectionStatus: status,

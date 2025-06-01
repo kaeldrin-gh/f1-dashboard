@@ -149,6 +149,19 @@ The dashboard integrates with the [Jolpi API](https://api.jolpi.ca/ergast/f1/) f
 - Sector time comparisons
 - Position change tracking
 
+### Driver Selection Features
+- **Smart Selection**: Initially auto-selects 3 drivers for immediate telemetry display
+- **Manual Control**: Click on any driver in the timing tower to toggle selection
+- **Clear All**: Removing all selected drivers shows complete grid without auto-reselection
+- **Maximum Limit**: Up to 5 drivers can be selected simultaneously for telemetry analysis
+- **Visual Feedback**: Selected drivers are highlighted in blue across all components
+
+### Race Calendar
+- **Upcoming Events**: View next races with countdown timers and session schedules
+- **Finished Races**: Browse completed race results with winner information  
+- **Driver Standings**: Current championship standings with positions, points, and teams
+- **Pagination**: Navigate through races using previous/next controls
+
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
