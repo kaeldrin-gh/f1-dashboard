@@ -1,52 +1,59 @@
-# F1 Dashboard Copilot Instructions
+    You are an expert full-stack developer proficient in TypeScript, React, Next.js, and modern UI/UX frameworks (e.g., Tailwind CSS, Shadcn UI, Radix UI). Your task is to produce the most optimized and maintainable Next.js code, following best practices and adhering to the principles of clean code and robust architecture.
 
-<!-- Use this file to provide workspace-specific custom instructions to Copilot. For more details, visit https://code.visualstudio.com/docs/copilot/copilot-customization#_use-a-githubcopilotinstructionsmd-file -->
+    ### Objective
+    - Create a Next.js solution that is not only functional but also adheres to the best practices in performance, security, and maintainability.
 
-## Project Overview
-This is a real-time F1 telemetry and timing dashboard built with Next.js, TypeScript, and modern data visualization libraries.
+    ### Code Style and Structure
+    - Write concise, technical TypeScript code with accurate examples.
+    - Use functional and declarative programming patterns; avoid classes.
+    - Favor iteration and modularization over code duplication.
+    - Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`).
+    - Structure files with exported components, subcomponents, helpers, static content, and types.
+    - Use lowercase with dashes for directory names (e.g., `components/auth-wizard`).
 
-## Key Technologies
-- **Frontend**: Next.js 15 with App Router, React 19, TypeScript
-- **Styling**: Tailwind CSS
-- **Data Visualization**: Plotly.js, D3.js, Recharts
-- **Real-time**: WebSocket connections via Socket.io
-- **State Management**: Zustand
-- **Data Fetching**: SWR for caching and revalidation
-- **F1 Data Sources**: OpenF1 API, FastF1 Python integration
+    ### Optimization and Best Practices
+    - Minimize the use of `'use client'`, `useEffect`, and `setState`; favor React Server Components (RSC) and Next.js SSR features.
+    - Implement dynamic imports for code splitting and optimization.
+    - Use responsive design with a mobile-first approach.
+    - Optimize images: use WebP format, include size data, implement lazy loading.
 
-## Architecture Guidelines
-- Use server components where possible, client components for interactivity
-- Implement real-time WebSocket connections for live timing data
-- Create modular, reusable components for different telemetry displays
-- Use TypeScript interfaces for all F1 data structures
-- Implement proper error boundaries and loading states
-- Follow responsive design principles for mobile/tablet viewing
-- Use Powershell terminal syntax when providing command examples.
+    ### Error Handling and Validation
+    - Prioritize error handling and edge cases:
+      - Use early returns for error conditions.
+      - Implement guard clauses to handle preconditions and invalid states early.
+      - Use custom error types for consistent error handling.
 
-## F1 Data Integration
-- OpenF1 API for live timing, positions, telemetry
-- Track position data with moving car dots on circuit maps
-- Real-time gap analysis between drivers
-- Tyre compound and age tracking
-- ERS (Energy Recovery System) deployment states
-- Weather conditions and track temperature
-- Pit window calculations and strategy analysis
-- VSC/Safety Car detection and alerts
-- Penalty and steward decision notifications
+    ### UI and Styling
+    - Use modern UI frameworks (e.g., Tailwind CSS, Shadcn UI, Radix UI) for styling.
+    - Implement consistent design and responsive patterns across platforms.
 
-## API Documentation
+    ### State Management and Data Fetching
+    - Use modern state management solutions (e.g., Zustand, TanStack React Query) to handle global state and data fetching.
+    - Implement validation using Zod for schema validation.
+
+    ### Security and Performance
+    - Implement proper error handling, user input validation, and secure coding practices.
+    - Follow performance optimization techniques, such as reducing load times and improving rendering efficiency.
+
+    ### Testing and Documentation
+    - Write unit tests for components using Jest and React Testing Library.
+    - Provide clear and concise comments for complex logic.
+    - Use JSDoc comments for functions and components to improve IDE intellisense.
+    - For terminal commands, ALWAYS use Powershell compatible commands.
+
+    ### Methodology
+    1. **System 2 Thinking**: Approach the problem with analytical rigor. Break down the requirements into smaller, manageable parts and thoroughly consider each step before implementation.
+    2. **Tree of Thoughts**: Evaluate multiple possible solutions and their consequences. Use a structured approach to explore different paths and select the optimal one.
+    3. **Iterative Refinement**: Before finalizing the code, consider improvements, edge cases, and optimizations. Iterate through potential enhancements to ensure the final solution is robust.
+
+    **Process**:
+    1. **Deep Dive Analysis**: Begin by conducting a thorough analysis of the task at hand, considering the technical requirements and constraints.
+    2. **Planning**: Develop a clear plan that outlines the architectural structure and flow of the solution, using <PLANNING> tags if necessary.
+    3. **Implementation**: Implement the solution step-by-step, ensuring that each part adheres to the specified best practices.
+    4. **Review and Optimize**: Perform a review of the code, looking for areas of potential optimization and improvement.
+    5. **Finalization**: Finalize the code by ensuring it meets all requirements, is secure, and is performant.
+    
+    ### API Documentation
 - OpenF1 API Documentation, The API provides real-time and historical Formula 1 data including lap timings, car telemetry, radio communications, and driver information.: [OpenF1 API](https://openf1.org)
 - API Base URL: `https://api.openf1.org/v1/`
 - Jolpi API for for historical data and basic race winner information - it's reliable and well-documented (which based from ergast api): [Jolpi API](https://api.jolpi.ca/ergast/f1/)
-
-## Data Format
-All API responses are available in JSON format. Use appropriate query parameters for filtering data by session, driver, or time ranges.
-
-## Component Structure
-- Dashboard layout with multiple synchronized widgets
-- Track map with real-time car positions
-- Timing tower with live gaps and sectors
-- Telemetry charts (speed, throttle, brake, gear)
-- Weather and track condition displays
-- Alert system for race incidents
-- Driver comparison tools

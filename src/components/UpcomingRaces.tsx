@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
  import { Meeting } from '@/types/f1-types';
 
 // Define TabType
-type TabType = 'upcoming' | 'finished';
+type TabType = 'upcoming' | 'finished' | 'standings';
 
 // Interface for Finished Race Data from Jolpi API
 interface JolpiDriver {
@@ -66,6 +66,65 @@ interface FinishedRace {
   date: string;
   winnerName: string;
   winnerTeam: string;
+}
+
+// Driver Standings interfaces for Jolpi API
+interface JolpiStandingsDriver {
+  driverId: string;
+  permanentNumber: string;
+  code: string;
+  givenName: string;
+  familyName: string;
+  nationality: string;
+}
+
+interface JolpiStandingsConstructor {
+  constructorId: string;
+  name: string;
+  nationality: string;
+}
+
+interface JolpiDriverStanding {
+  position: string;
+  positionText: string;
+  points: string;
+  wins: string;
+  Driver: JolpiStandingsDriver;
+  Constructors: JolpiStandingsConstructor[];
+}
+
+interface JolpiStandingsList {
+  season: string;
+  round: string;
+  DriverStandings: JolpiDriverStanding[];
+}
+
+interface JolpiStandingsTable {
+  season: string;
+  round: string;
+  StandingsLists: JolpiStandingsList[];
+}
+
+interface JolpiStandingsMRData {
+  xmlns: string;
+  series: string;
+  url: string;
+  limit: string;
+  offset: string;
+  total: string;
+  StandingsTable: JolpiStandingsTable;
+}
+
+interface JolpiStandingsResponse {
+  MRData: JolpiStandingsMRData;
+}
+
+interface DriverStanding {
+  position: number;
+  driverName: string;
+  team: string;
+  points: number;
+  wins: number;
 }
 
 // Hardcoded 2025 F1 calendar
@@ -208,18 +267,21 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true); // For upcoming races
   const [error, setError] = useState<string | null>(null); // For upcoming races
-  
-  const [activeTab, setActiveTab] = useState<TabType>('upcoming');
+    const [activeTab, setActiveTab] = useState<TabType>('upcoming');
   const [finishedRaces, setFinishedRaces] = useState<FinishedRace[]>([]);
   const [finishedRacesLoading, setFinishedRacesLoading] = useState(true);
   const [finishedRacesError, setFinishedRacesError] = useState<string | null>(null);
 
+  const [driverStandings, setDriverStandings] = useState<DriverStanding[]>([]);
+  const [standingsLoading, setStandingsLoading] = useState(true);
+  const [standingsError, setStandingsError] = useState<string | null>(null);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
   // Helper booleans for active tab
   const isUpcomingTab = activeTab === 'upcoming';
   const isFinishedTab = activeTab === 'finished';
+  const isStandingsTab = activeTab === 'standings';
 
   useEffect(() => {
     // Fetch upcoming races (existing logic)
@@ -334,6 +396,50 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
 
     fetchFinishedRaces();
 
+    // Fetch driver standings for 2025 season
+    const fetchDriverStandings = async () => {
+      try {
+        setStandingsLoading(true);
+        setStandingsError(null);
+        
+        const response = await fetch('https://api.jolpi.ca/ergast/f1/2025/driverstandings.json');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch driver standings: ${response.statusText} (status: ${response.status})`);
+        }
+        
+        const data: JolpiStandingsResponse = await response.json();
+        console.log('[UpcomingRaces] Driver standings API response:', data);
+        
+        if (data.MRData && data.MRData.StandingsTable && data.MRData.StandingsTable.StandingsLists) {
+          const standingsList = data.MRData.StandingsTable.StandingsLists[0]; // Get latest standings
+          
+          if (standingsList && standingsList.DriverStandings) {
+            const processedStandings: DriverStanding[] = standingsList.DriverStandings.map(standing => ({
+              position: parseInt(standing.position),
+              driverName: `${standing.Driver.givenName} ${standing.Driver.familyName}`,
+              team: standing.Constructors[0]?.name || 'Unknown',
+              points: parseInt(standing.points),
+              wins: parseInt(standing.wins)
+            }));
+            
+            setDriverStandings(processedStandings);
+            console.log('[UpcomingRaces] Processed driver standings:', processedStandings.length);
+          } else {
+            setStandingsError('No driver standings data available for 2025 season');
+          }
+        } else {
+          setStandingsError('Invalid driver standings response structure');
+        }
+      } catch (err) {
+        console.error('Error fetching driver standings:', err);
+        setStandingsError(`Failed to fetch driver standings: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      } finally {
+        setStandingsLoading(false);
+      }
+    };
+
+    fetchDriverStandings();
+
   }, []);
 
   const formatRaceDate = (dateString: string) => {
@@ -383,23 +489,26 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
     };
     return flagMap[countryCodeOrName.toUpperCase()] || flagMap[countryCodeOrName] || '🏁'; // Try uppercase for codes like 'AE', then original, then fallback
   };
-  
-  const handlePrevious = () => {
-    setCurrentIndex(prev => Math.max(0, prev - 1));
+    const handlePrevious = () => {
+    setCurrentIndex(prev => Math.max(0, prev - maxVisibleRaces));
   };
-
   const handleNext = () => {
-    const currentList = isUpcomingTab ? meetings : finishedRaces;
+    let currentList;
+    if (isUpcomingTab) currentList = meetings;
+    else if (isFinishedTab) currentList = finishedRaces;
+    else currentList = driverStandings;
+    
     const maxIndex = Math.max(0, currentList.length - maxVisibleRaces);
-    setCurrentIndex(prev => Math.min(maxIndex, prev + 1));
+    setCurrentIndex(prev => Math.min(maxIndex, prev + maxVisibleRaces));
   };
 
-  const currentData = isUpcomingTab ? meetings : finishedRaces;
+  const currentData = isUpcomingTab ? meetings : isFinishedTab ? finishedRaces : driverStandings;
   const upcomingVisibleMeetings = meetings.slice(currentIndex, currentIndex + maxVisibleRaces);
   const visibleFinishedRaces = finishedRaces.slice(currentIndex, currentIndex + maxVisibleRaces);
+  const visibleDriverStandings = driverStandings.slice(currentIndex, currentIndex + maxVisibleRaces);
   
   const canGoBack = currentIndex > 0;
-  const currentListForForwardCheck = isUpcomingTab ? meetings : finishedRaces;
+  const currentListForForwardCheck = isUpcomingTab ? meetings : isFinishedTab ? finishedRaces : driverStandings;
   const canGoForward = currentIndex < (currentListForForwardCheck.length - maxVisibleRaces);
 
   if (loading && isUpcomingTab) {
@@ -412,13 +521,23 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
       </div>
     );
   }
-
   if (finishedRacesLoading && isFinishedTab) {
     return (
       <div className="space-y-4">
         <div className="text-center py-8">
           <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mb-3"></div>
           <p className="text-gray-400 text-sm">Loading finished races...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (standingsLoading && isStandingsTab) {
+    return (
+      <div className="space-y-4">
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-green-500 mb-3"></div>
+          <p className="text-gray-400 text-sm">Loading driver standings...</p>
         </div>
       </div>
     );
@@ -432,12 +551,20 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
       </div>
     );
   }  
-
   if (finishedRacesError && isFinishedTab) {
     return (
       <div className="text-center py-8">
         <p className="text-red-400 text-sm">{finishedRacesError}</p>
         <p className="text-gray-500 text-xs mt-2">Could not load finished race data. Please try again later.</p>
+      </div>
+    );
+  }
+
+  if (standingsError && isStandingsTab) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-400 text-sm">{standingsError}</p>
+        <p className="text-gray-500 text-xs mt-2">Could not load driver standings. Please try again later.</p>
       </div>
     );
   }
@@ -450,8 +577,7 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Tab Buttons */}
+    <div className="space-y-4">      {/* Tab Buttons */}
       <div className="flex border-b border-gray-700 mb-4">
         <button
           onClick={() => { setActiveTab('upcoming'); setCurrentIndex(0); }}
@@ -473,11 +599,22 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
         >
           Finished ({finishedRaces.length})
         </button>
-      </div>      {/* Header with navigation - adjust for active tab */}
-      <div className="flex items-center justify-end">
-          {/* Pagination controls: Show for active tab if it has more races than maxVisibleRaces */}
+        <button
+          onClick={() => { setActiveTab('standings'); setCurrentIndex(0); }}
+          className={`py-2 px-4 text-sm font-medium transition-colors ${
+            isStandingsTab
+              ? 'border-b-2 border-green-500 text-white'
+              : 'text-gray-400 hover:text-gray-200'
+          }`}        >
+          Standings ({driverStandings.length})
+        </button>
+      </div>
+
+      {/* Header with navigation - adjust for active tab */}
+      <div className="flex items-center justify-end">          {/* Pagination controls: Show for active tab if it has more races than maxVisibleRaces */}
           {((isUpcomingTab && meetings.length > maxVisibleRaces) || 
-            (isFinishedTab && finishedRaces.length > maxVisibleRaces)) && (
+            (isFinishedTab && finishedRaces.length > maxVisibleRaces) ||
+            (isStandingsTab && driverStandings.length > maxVisibleRaces)) && (
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrevious}
@@ -492,13 +629,14 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            
-            <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500">
               {currentIndex + 1}-{
                 isUpcomingTab 
                   ? Math.min(currentIndex + maxVisibleRaces, meetings.length) 
-                  : Math.min(currentIndex + maxVisibleRaces, finishedRaces.length)
-              } of {isUpcomingTab ? meetings.length : finishedRaces.length}
+                  : isFinishedTab
+                  ? Math.min(currentIndex + maxVisibleRaces, finishedRaces.length)
+                  : Math.min(currentIndex + maxVisibleRaces, driverStandings.length)
+              } of {isUpcomingTab ? meetings.length : isFinishedTab ? finishedRaces.length : driverStandings.length}
             </span>
             
             <button
@@ -635,11 +773,99 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
                 </div>
               ))}
             </div>
+          )}        </>
+      )}
+
+      {isStandingsTab && (
+        <>
+          {standingsLoading && (
+            <div className="text-center py-8">
+              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-green-500 mb-3"></div>
+              <p className="text-gray-400 text-sm">Loading driver standings...</p>
+            </div>
+          )}
+          
+          {standingsError && (
+            <div className="text-center py-8">
+              <p className="text-red-400 text-sm">{standingsError}</p>
+              <p className="text-gray-500 text-xs mt-2">Could not load driver standings. Please try again later.</p>
+            </div>
+          )}
+          
+          {driverStandings.length === 0 && !standingsLoading && !standingsError && (
+            <div className="text-center py-8">
+              <p className="text-gray-400 text-sm">No driver standings available for 2025 yet.</p>
+              <p className="text-gray-500 text-xs mt-2">Check back after races have started.</p>
+            </div>
+          )}
+          
+          {driverStandings.length > 0 && !standingsLoading && (
+            <div className="space-y-2">
+              {/* Header row */}
+              <div className="grid grid-cols-5 gap-3 px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-600">
+                <div className="text-center">Pos</div>
+                <div className="col-span-2">Driver</div>
+                <div>Team</div>
+                <div className="text-right">Points</div>
+              </div>
+              
+              {/* Driver standings rows */}
+              {visibleDriverStandings.map((standing, index) => {
+                const globalPosition = currentIndex + index + 1;
+                const isTopThree = standing.position <= 3;
+                const positionColors = {
+                  1: 'text-yellow-400 bg-yellow-400/10', // Gold
+                  2: 'text-gray-300 bg-gray-300/10',     // Silver  
+                  3: 'text-orange-400 bg-orange-400/10'   // Bronze
+                };
+                
+                return (
+                  <div
+                    key={standing.position}
+                    className={`grid grid-cols-5 gap-3 p-3 rounded-lg border transition-all duration-200 hover:shadow-lg ${
+                      isTopThree 
+                        ? 'bg-gray-700/30 border-gray-500/50 hover:bg-gray-700/50' 
+                        : 'bg-gray-700/20 border-gray-600/30 hover:bg-gray-700/40'
+                    }`}
+                  >
+                    {/* Position */}
+                    <div className="flex items-center justify-center">
+                      <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        isTopThree ? positionColors[standing.position as keyof typeof positionColors] : 'text-gray-300'
+                      }`}>
+                        {standing.position}
+                      </span>
+                    </div>
+                    
+                    {/* Driver Name */}
+                    <div className="col-span-2 flex items-center">
+                      <div>
+                        <p className="text-white font-medium truncate">{standing.driverName}</p>
+                        {standing.wins > 0 && (
+                          <p className="text-xs text-green-400">🏆 {standing.wins} win{standing.wins > 1 ? 's' : ''}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Team */}
+                    <div className="flex items-center">
+                      <p className="text-gray-300 text-sm truncate" title={standing.team}>
+                        {standing.team}
+                      </p>
+                    </div>
+                    
+                    {/* Points */}
+                    <div className="flex items-center justify-end">
+                      <p className="text-white font-semibold text-lg">{standing.points}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </>
       )}
-      
-      {/* Footer */}
+        {/* Footer */}
       <div className="text-center pt-2">
         <p className="text-xs text-gray-500">
           {isUpcomingTab && (
@@ -652,11 +878,18 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
               ? `${finishedRaces.length} finished race${finishedRaces.length > 1 ? 's' : ''} • 2025 F1 Season`
               : 'No finished races recorded yet for 2025'
           )}
+          {isStandingsTab && (
+            driverStandings.length > 0
+              ? `${driverStandings.length} driver${driverStandings.length > 1 ? 's' : ''} • 2025 Championship Standings`
+              : 'No standings available yet for 2025'
+          )}
         </p>
         <p className="text-xs text-gray-400 mt-1">
           {isUpcomingTab 
             ? 'Showing predicted 2025 F1 calendar'
-            : 'Finished race data from Jolpi API (Ergast)'
+            : isFinishedTab
+            ? 'Finished race data from Jolpi API (Ergast)'
+            : 'Driver standings from Jolpi API (Ergast)'
           }
         </p>
       </div>

@@ -26,7 +26,7 @@ A real-time Formula 1 telemetry and timing dashboard built with Next.js, providi
 - **Position Changes** - Real-time overtaking and position swap tracking
 - **Penalty System** - Steward decisions and penalty notifications
 - **Pit Strategy** - Optimal pit window calculations and strategy analysis
-- **Race Calendar** - F1 calendar with upcoming race schedules and finished race results with winners
+- **Race Calendar** - Complete F1 calendar with upcoming races, finished race results with winners, and driver championship standings
 
 ### 🏁 Supported Circuits
 - Monaco (Monte Carlo)
@@ -119,6 +119,12 @@ The dashboard integrates with the [OpenF1 API](https://openf1.org/) for:
 - Driver positions and telemetry
 - Weather and track conditions
 - Race control messages
+
+### Jolpi/Ergast API
+The dashboard integrates with the [Jolpi API](https://api.jolpi.ca/ergast/f1/) for:
+- Historical race results and winners
+- Driver championship standings
+- Season statistics and records
 
 ### Real-Time Updates
 - WebSocket connections for live data streaming
