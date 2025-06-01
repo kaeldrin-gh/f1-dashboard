@@ -124,10 +124,13 @@ export function TimingTower({ positions, intervals, drivers }: TimingTowerProps)
           <div className="col-span-1">ERS</div>
         </div>
       </div>
-      
-      {selectedDrivers.length > 0 && (
+        {selectedDrivers.length > 0 ? (
         <div className="text-xs text-blue-400 mb-2">
           {selectedDrivers.length} driver{selectedDrivers.length > 1 ? 's' : ''} selected for telemetry • Click to toggle
+        </div>
+      ) : (
+        <div className="text-xs text-gray-400 mb-2">
+          Click on drivers below to select them for telemetry analysis (max 5)
         </div>
       )}{/* Timing rows */}
       <div className="space-y-1 max-h-96 overflow-y-auto">
