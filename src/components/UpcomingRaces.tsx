@@ -460,14 +460,19 @@ export function UpcomingRaces({ maxVisibleRaces = 3 }: UpcomingRacesProps) {
       timeZoneName: 'short'
     });
   };  
-  
-  const getDaysUntilRace = (dateString: string) => {
+    const getDaysUntilRace = (dateString: string) => {
     const raceDate = new Date(dateString);
     const now = new Date();
     const diffTime = raceDate.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 0) return 'Today';
+    // Use floor instead of ceil to avoid rounding up same-day races
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Check if it's the same calendar day
+    const raceDay = raceDate.toDateString();
+    const today = now.toDateString();
+    
+    if (raceDay === today) return 'Today';
     if (diffDays === 1) return 'Tomorrow';
     if (diffDays < 7) return `${diffDays} days`;
     if (diffDays < 30) return `${Math.ceil(diffDays / 7)} week${Math.ceil(diffDays / 7) > 1 ? 's' : ''}`;
