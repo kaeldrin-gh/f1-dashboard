@@ -3,6 +3,11 @@
     ### Objective
     - Create a Next.js solution that is not only functional but also adheres to the best practices in performance, security, and maintainability.
 
+     ### API Documentation
+    - OpenF1 API Documentation, The API provides real-time and historical Formula 1 data including lap timings, car telemetry, radio communications, and driver information.: [OpenF1 API](https://openf1.org)
+    - API Base URL: `https://api.openf1.org/v1/`
+    - Jolpi API for for historical data and basic race winner information - it's reliable and well-documented (which based from ergast api): [Jolpi API](https://api.jolpi.ca/ergast/f1/)
+
     ### Code Style and Structure
     - Write concise, technical TypeScript code with accurate examples.
     - Use functional and declarative programming patterns; avoid classes.
@@ -10,6 +15,7 @@
     - Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`).
     - Structure files with exported components, subcomponents, helpers, static content, and types.
     - Use lowercase with dashes for directory names (e.g., `components/auth-wizard`).
+    - For terminal commands, ALWAYS use Powershell compatible commands.
 
     ### Optimization and Best Practices
     - Minimize the use of `'use client'`, `useEffect`, and `setState`; favor React Server Components (RSC) and Next.js SSR features.
@@ -39,7 +45,7 @@
     - Write unit tests for components using Jest and React Testing Library.
     - Provide clear and concise comments for complex logic.
     - Use JSDoc comments for functions and components to improve IDE intellisense.
-    - For terminal commands, ALWAYS use Powershell compatible commands.
+    - Clean test files and ensure they are not included in the production build.
 
     ### Methodology
     1. **System 2 Thinking**: Approach the problem with analytical rigor. Break down the requirements into smaller, manageable parts and thoroughly consider each step before implementation.
@@ -53,7 +59,4 @@
     4. **Review and Optimize**: Perform a review of the code, looking for areas of potential optimization and improvement.
     5. **Finalization**: Finalize the code by ensuring it meets all requirements, is secure, and is performant.
     
-    ### API Documentation
-- OpenF1 API Documentation, The API provides real-time and historical Formula 1 data including lap timings, car telemetry, radio communications, and driver information.: [OpenF1 API](https://openf1.org)
-- API Base URL: `https://api.openf1.org/v1/`
-- Jolpi API for for historical data and basic race winner information - it's reliable and well-documented (which based from ergast api): [Jolpi API](https://api.jolpi.ca/ergast/f1/)
+   
